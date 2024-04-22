@@ -54,7 +54,7 @@ MK_RMDIR=$(if ${1}, del  ${1} )
 MK_PATHTOWIN=$(subst /,\,${1})
 .PHONY : clean
 clean:
-	$(call MK_RMDIR, $(call MK_PATHTOWIN, ${OBJS} $(C_DEPS) $(USER_OBJS) ))
+	$(call MK_RMDIR, $(call MK_PATHTOWIN, ${OBJS} $(USER_OBJS) ))
 
 secondary-outputs: $(SECONDARY_SIZE)
 

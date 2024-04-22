@@ -1,5 +1,6 @@
 import os  
-  
+import subprocess
+ 
   
 all_objs = list()  
 
@@ -40,6 +41,7 @@ def generate_makefile_mk(directory, make_relative_path, default_args):
     
     get_dir = list()
     # 遍历目录，查找所有的.c源文件  
+    '''
     for root, dirs, files in os.walk(directory):  
         for file in files:  
             if file.endswith('.c'):  
@@ -51,6 +53,21 @@ def generate_makefile_mk(directory, make_relative_path, default_args):
                 c_deps.append(dep_file) 
                 # get_dir.append(root.replace('\\', '/'))
                 all_objs.append(os.path.join(directory, obj_file).replace('\\', '/'))
+    '''
+    file_list = os.listdir(directory)
+    for file in file_list:
+        cur_path = os.path.join(directory, file)
+        if os.path.isdir(cur_path):
+            pass
+        elif file.endswith('.c'):  
+            relative_path = os.path.relpath(os.path.join(directory, file), directory)  
+            c_srcs.append(relative_path)  
+            obj_file = os.path.splitext(relative_path)[0] + '.o'  
+            objs.append(obj_file)  
+            dep_file = os.path.splitext(relative_path)[0] + '.d'  
+            c_deps.append(dep_file) 
+            # get_dir.append(root.replace('\\', '/'))
+            all_objs.append(os.path.join(directory, obj_file).replace('\\', '/'))
 
     # 生成subdir.mk文件内容  
     makefile_mk_content = """  
@@ -72,7 +89,7 @@ C_DEPS += \\
     makefile_mk_content+= compile_template_str.replace('\\', '/')
     
 
-    print('xxxxxxxxxxxxxxxxxxx', make_relative_path, directory, compile_template_str.replace('/', '\\'))
+    # print('xxxxxxxxxxxxxxxxxxx', make_relative_path, directory, compile_template_str.replace('/', '\\'))
     # print('xxxxxxxxxxxxxxxxxxx', compile_template_str.replace('\\', '/'), relpath, directory)
     # 将内容写入subdir.mk文件  
     with open(makefile_mk_name, 'w') as makefile_mk:  
@@ -100,6 +117,8 @@ def foreach_dir(root_dir, relative_path, default_args):
             if file.endswith('.c'):
                 is_have_c = True
         if (is_make) and (is_have_c):
+            # print(root, dirs, files)
+            # input('wait aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
             generate_makefile_mk(root, relative_path, default_args)  
             '''
             include_mk = '-include {0}'.format(root+'.mk')
@@ -122,7 +141,7 @@ if __name__ == "__main__":
     relative_path = os.path.relpath( os.path.abspath(args.r), makefile_path )  
     
     
-    print('xxxxxxxxxxxxxxx', makefile_path, os.path.abspath(args.r), relative_path)
+    # print('xxxxxxxxxxxxxxx', makefile_path, os.path.abspath(args.r), relative_path)
     root_path = args.r
     
     with open(args.a, 'r') as f:
@@ -133,7 +152,7 @@ if __name__ == "__main__":
     insert_content_list = list()
     insert_content_list+= ('-include {0}'.format(dir_sub+'/subdir.mk\n') for dir_sub in dirs)
     insert_content = ''.join(insert_content_list)
-    print(dirs, insert_content)
+    # print(dirs, insert_content)
     # for dir_sub in dirs:
         
     search_content = "-include Project_Settings/Startup_Code/subdir.mk"  
@@ -152,7 +171,7 @@ if __name__ == "__main__":
         with open('./build/Makefile', 'w') as file:  
             file.writelines(lines)  
             file.close()
-        print("create successful.")  
+        # print("create successful.")  
     else:  
         print("create fail")    
    
@@ -161,7 +180,7 @@ if __name__ == "__main__":
     link_parameter_list = list()
     link_parameter_list+= ("\"{0}\"\n".format(obj) for obj in all_objs)
     link_parameter_content = ''.join(link_parameter_list)
-    print(link_parameter_list, link_parameter_content)
+    # print(link_parameter_list, link_parameter_content)
     link_lines = None
     with open(args.l, 'r') as f:  
         link_lines = f.readlines()  
@@ -170,10 +189,12 @@ if __name__ == "__main__":
             line_number = i  
             break  
             
-    print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', i)
+    # print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', i)
     if line_number is not None:  
         link_lines.insert(line_number + 1, link_parameter_content)              
         with open('./build/S32K3_M7_0_0.args', 'w') as file:  
             file.writelines(link_lines)  
             file.close()
+    # os.system('cp ./config/compile.mk ./build/')
+    subprocess.run(["powershell", 'cp ./config/compile.mk ./build/'], capture_output=True, text=True)
             
