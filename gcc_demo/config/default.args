@@ -1,0 +1,9 @@
+-std=c99
+-DGCC
+-I../detect
+-I../handle
+-Os
+-Wall
+-Wextra
+-c
+-Wunused
