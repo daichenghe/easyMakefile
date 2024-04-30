@@ -35,6 +35,7 @@ TC_ASM:= D:/soft_install/NXP/S32DS.3.5/S32DS/build_tools/gcc_v10.2/gcc-10.2-arm3
 TC_LINK:= D:/soft_install/NXP/S32DS.3.5/S32DS/build_tools/gcc_v10.2/gcc-10.2-arm32-eabi/bin/arm-none-eabi-ld.exe
 TC_AR:= D:/soft_install/NXP/S32DS.3.5/S32DS/build_tools/gcc_v10.2/gcc-10.2-arm32-eabi/bin/arm-none-eabi-ar.exe
 TC_SIZE:= D:/soft_install/NXP/S32DS.3.5/S32DS/build_tools/gcc_v10.2/gcc-10.2-arm32-eabi/bin/arm-none-eabi-size.exe
+endif
 
 ifeq "$(COMPILER)" "GCC"
 TC_CC:= gcc
@@ -45,6 +46,5 @@ TC_AR:= ar
 endif
 
 
-endif
 
 

@@ -26,24 +26,19 @@ S32K3_M7_0_0.siz \
 
 
 # All Target
-all: S32K3_M7_0_0.elf secondary-outputs
+all: app.exe secondary-outputs
 
 dependents:
 	-cd ./build && $(MAKE) clean all
 
 # Tool invocations
-S32K3_M7_0_0.elf: $(OBJS) ../Project_Settings/Linker_Files/linker_flash_c0_s32k358.ld $(USER_OBJS) 
+app.exe: $(OBJS)  $(USER_OBJS) 
 	@echo 'Building target: $@'
 	@echo 'Invoking: Standard S32DS C Linker'
-	${TC_CC} -o "S32K3_M7_0_0.elf" "@S32K3_M7_0_0.args"  $(USER_OBJS)
+	${TC_CC} $(USER_OBJS) "@S32K3_M7_0_0.args" -o   "app.exe" 
 	@echo 'Finished building target: $@'
 	@echo ' '
 
-S32K3_M7_0_0.siz: S32K3_M7_0_0.elf
-	@echo 'Invoking: Standard S32DS Print Size'
-	${TC_SIZE} --format=berkeley S32K3_M7_0_0.elf
-	@echo 'Finished building: $@'
-	@echo ' '
 
 # Other Targets
 MK_RMDIR=$(if ${1}, del  ${1} )
@@ -52,7 +47,7 @@ MK_PATHTOWIN=$(subst /,\,${1})
 clean:
 	$(call MK_RMDIR, $(call MK_PATHTOWIN, ${OBJS} $(USER_OBJS) ))
 
-secondary-outputs: $(SECONDARY_SIZE)
+secondary-outputs:
 
 .PHONY: all clean dependents
 ./S32K3_M7_0_2.elf:
